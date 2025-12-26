@@ -1,0 +1,30 @@
+{
+  "name": "event-emitter",
+  "version": "1.0.0",
+  "description": "Sistema de eventos (Event Emitter) robusto e performático implementando o padrão Pub/Sub",
+  "main": "EventEmitter.js",
+  "types": "EventEmitter.ts",
+  "scripts": {
+    "test": "node EventEmitter.test.js"
+  },
+  "keywords": [
+    "event",
+    "emitter",
+    "pub-sub",
+    "observer",
+    "events",
+    "listener",
+    "typescript",
+    "javascript"
+  ],
+  "author": "SR VINIX <https://github.com/alguemqualquer123>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alguemqualquer123/Sistema-de-eventos-Event-Emitter-.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alguemqualquer123/Sistema-de-eventos-Event-Emitter-/issues"
+  },
+  "homepage": "https://github.com/alguemqualquer123/Sistema-de-eventos-Event-Emitter-#readme"
+}

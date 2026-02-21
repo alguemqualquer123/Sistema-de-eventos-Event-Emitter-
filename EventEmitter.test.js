@@ -1,4 +1,5 @@
 const { EventEmitter } = require('./EventEmitter.js');
+const { createEventEmitter } = require('./EventEmitter.js');
 
 function assert(condition, message) {
   if (!condition) {

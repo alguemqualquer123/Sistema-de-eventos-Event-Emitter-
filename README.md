@@ -1,322 +1,147 @@
-# 🎯 Event Emitter
+# tiny-emitter
 
-Sistema de eventos (Event Emitter) robusto e performático, implementando o padrão Pub/Sub sem uso de bibliotecas externas.
+Lightweight EventEmitter implementation with TypeScript support.
 
-## 📋 Características
-
-- ✅ Padrão Pub/Sub completo
-- ✅ Suporte a múltiplos listeners por evento
-- ✅ Execução única com `once()`
-- ✅ Gerenciamento automático de memória
-- ✅ Alta performance
-- ✅ Zero dependências
-- ✅ TypeScript e JavaScript
-- ✅ Compatível com Node.js e Browser
-
-## 🚀 Instalação
+## Install
 
 ```bash
-# Clone o repositório
-git clone https://github.com/alguemqualquer123/Sistema-de-eventos-Event-Emitter-.git
-
-# Entre no diretório
-cd event-emitter
+npm install tiny-emitter
 ```
 
-## 📖 Uso
+## Usage
 
-### JavaScript
+### JavaScript / TypeScript
 
 ```javascript
-const { EventEmitter } = require('./EventEmitter.js');
+const { EventEmitter } = require('tiny-emitter');
+// or ESM
+import { EventEmitter } from 'tiny-emitter';
 
 const emitter = new EventEmitter();
 
-// Adicionar listener
+emitter.on('data', (msg) => {
+  console.log('received:', msg);
+});
+
+emitter.emit('data', 'hello');
+```
+
+## API
+
+### `on(eventName, listener)` / `addListener(eventName, listener)`
+
+Register a listener for an event.
+
+```javascript
 emitter.on('message', (data) => {
-  console.log('Recebido:', data);
+  console.log(data);
 });
-
-// Emitir evento
-emitter.emit('message', 'Olá, mundo!');
-
-// Listener único
-emitter.once('init', () => {
-  console.log('Inicializado apenas uma vez');
-});
-
-// Remover listener
-const handler = (data) => console.log(data);
-emitter.on('data', handler);
-emitter.off('data', handler);
-```
-
-### TypeScript
-
-```typescript
-import { EventEmitter } from './EventEmitter';
-
-const emitter = new EventEmitter();
-
-emitter.on('user:login', (userId: string) => {
-  console.log(`Usuário ${userId} logou`);
-});
-
-emitter.emit('user:login', '12345');
-```
-
-## 🔧 API
-
-### `on(eventName, listener)`
-
-Adiciona um listener para o evento especificado.
-
-**Parâmetros:**
-- `eventName` (string): Nome do evento
-- `listener` (function): Função callback a ser executada
-
-**Retorna:** `this` (para encadeamento)
-
-```javascript
-emitter.on('data', (value) => {
-  console.log(value);
-});
-```
-
-### `off(eventName, listener)`
-
-Remove um listener do evento especificado.
-
-**Parâmetros:**
-- `eventName` (string): Nome do evento
-- `listener` (function): Função a ser removida
-
-**Retorna:** `this` (para encadeamento)
-
-```javascript
-const handler = (data) => console.log(data);
-emitter.on('data', handler);
-emitter.off('data', handler);
 ```
 
 ### `once(eventName, listener)`
 
-Adiciona um listener que será executado apenas uma vez.
-
-**Parâmetros:**
-- `eventName` (string): Nome do evento
-- `listener` (function): Função callback
-
-**Retorna:** `this` (para encadeamento)
+Register a one-time listener.
 
 ```javascript
-emitter.once('ready', () => {
-  console.log('Sistema pronto!');
+emitter.once('init', () => {
+  console.log('initialized');
 });
+```
+
+### `off(eventName, listener)` / `removeListener(eventName, listener)`
+
+Remove a listener.
+
+```javascript
+const handler = (msg) => console.log(msg);
+emitter.on('msg', handler);
+emitter.off('msg', handler);
 ```
 
 ### `emit(eventName, ...args)`
 
-Emite um evento, executando todos os listeners registrados.
-
-**Parâmetros:**
-- `eventName` (string): Nome do evento
-- `...args` (any[]): Argumentos passados aos listeners
-
-**Retorna:** `boolean` (true se havia listeners, false caso contrário)
+Emit an event. Returns `true` if listeners were called.
 
 ```javascript
-emitter.emit('update', { id: 1, name: 'Item' });
+emitter.emit('update', { id: 1, name: 'test' });
 ```
 
 ### `removeAllListeners(eventName?)`
 
-Remove todos os listeners de um evento específico ou de todos os eventos.
-
-**Parâmetros:**
-- `eventName` (string, opcional): Nome do evento
-
-**Retorna:** `this`
+Remove all listeners, or those for the specified event.
 
 ```javascript
-emitter.removeAllListeners('data');
-emitter.removeAllListeners(); // Remove todos
+emitter.removeAllListeners('update');
+emitter.removeAllListeners(); // remove all
 ```
 
 ### `listenerCount(eventName)`
 
-Retorna o número de listeners registrados para um evento.
-
-**Parâmetros:**
-- `eventName` (string): Nome do evento
-
-**Retorna:** `number`
+Get the number of listeners for an event.
 
 ```javascript
-const count = emitter.listenerCount('message');
+console.log(emitter.listenerCount('update'));
+```
+
+### `listeners(eventName)`
+
+Get all listeners for an event.
+
+```javascript
+console.log(emitter.listeners('update'));
 ```
 
 ### `eventNames()`
 
-Retorna um array com os nomes de todos os eventos que possuem listeners.
-
-**Retorna:** `string[]`
+Get all registered event names.
 
 ```javascript
-const events = emitter.eventNames();
-console.log(events); // ['message', 'data', 'ready']
+console.log(emitter.eventNames());
 ```
 
-## 🧪 Testes
+### `setMaxListeners(n)`
 
-Execute os testes para verificar a funcionalidade:
-
-```bash
-node EventEmitter.test.js
-```
-
-Todos os testes devem passar com sucesso ✅
-
-## 💡 Exemplos de Uso
-
-### Sistema de Notificações
+Set max listeners (default: 10).
 
 ```javascript
-const emitter = new EventEmitter();
-
-emitter.on('notification', (message) => {
-  console.log(`📢 ${message}`);
-});
-
-emitter.on('notification:error', (error) => {
-  console.error(`❌ Erro: ${error}`);
-});
-
-emitter.emit('notification', 'Novo usuário registrado');
-emitter.emit('notification:error', 'Falha na conexão');
+emitter.setMaxListeners(20);
 ```
 
-### Event Bus para Aplicação
+### `getMaxListeners()`
+
+Get max listeners value.
 
 ```javascript
-class AppEventBus extends EventEmitter {
-  constructor() {
-    super();
-    this.setupDefaultHandlers();
-  }
+console.log(emitter.getMaxListeners());
+```
 
-  setupDefaultHandlers() {
-    this.on('app:start', () => console.log('App iniciado'));
-    this.on('app:error', (err) => console.error('Erro:', err));
-  }
+## TypeScript
+
+Full type definitions are included.
+
+```typescript
+import { EventEmitter } from 'tiny-emitter';
+
+interface UserEvent {
+  id: number;
+  name: string;
 }
 
-const bus = new AppEventBus();
-bus.emit('app:start');
-```
+const emitter = new EventEmitter<UserEvent>();
 
-### Chat em Tempo Real
-
-```javascript
-const chatEmitter = new EventEmitter();
-
-chatEmitter.on('message', (user, text) => {
-  console.log(`${user}: ${text}`);
+emitter.on('user:login', ({ id, name }) => {
+  console.log(`User ${name} (${id}) logged in`);
 });
 
-chatEmitter.on('user:join', (user) => {
-  console.log(`${user} entrou no chat`);
-});
-
-chatEmitter.on('user:leave', (user) => {
-  console.log(`${user} saiu do chat`);
-});
-
-chatEmitter.emit('user:join', 'SR VINIX');
-chatEmitter.emit('message', 'SR VINIX', 'Olá pessoal!');
+emitter.emit('user:login', { id: 1, name: 'John' });
 ```
 
-## 🎯 Recursos Avançados
+## Build
 
-### Encadeamento de Métodos
-
-```javascript
-emitter
-  .on('start', () => console.log('Iniciando...'))
-  .on('progress', (percent) => console.log(`${percent}%`))
-  .on('complete', () => console.log('Completo!'))
-  .emit('start');
+```bash
+npm run build
 ```
 
-### Gerenciamento de Memória
+## License
 
-O EventEmitter gerencia automaticamente a memória, removendo listeners quando não há mais referências e limpando eventos vazios.
-
-```javascript
-const handler = () => console.log('test');
-emitter.on('test', handler);
-emitter.off('test', handler); // Evento 'test' removido automaticamente
-```
-
-## 📊 Performance
-
-- **Operações O(1)**: Adicionar e emitir eventos
-- **Memória otimizada**: Remoção automática de eventos sem listeners
-- **Zero overhead**: Sem dependências externas
-- **Cópia defensiva**: Listeners são copiados antes da execução para evitar bugs
-
-## 🛡️ Prevenção de Memory Leaks
-
-O sistema implementa várias estratégias para prevenir vazamento de memória:
-
-1. Remoção automática de eventos vazios
-2. Método `once()` remove o listener automaticamente após execução
-3. Método `removeAllListeners()` para limpeza em massa
-4. Uso de `Map` para performance e gerenciamento eficiente
-
-## 📝 Licença
-
-MIT License
-
-Copyright (c) 2025 SR VINIX
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## 👤 Autor
-
-**SR VINIX**
-- GitHub: [@alguemqualquer123](https://github.com/alguemqualquer123)
-
-## 🤝 Contribuindo
-
-Contribuições, issues e feature requests são bem-vindos!
-
-1. Fork o projeto
-2. Crie sua branch de feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## ⭐ Mostre seu apoio
-
-Se este projeto foi útil para você, dê uma ⭐!
-
----
-
-Desenvolvido com ❤️ por [SR VINIX](https://github.com/alguemqualquer123)
+MIT
